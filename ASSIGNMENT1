@@ -1,1 +1,71 @@
+QUESTIONS: (due 17 March, 2025)
+1. The data set leprosy available in the R package lmreg (taken from Senedecor and
+Cochran, 1967) contains pre- and post-treatment scores on abundance of leprosy for
+patients receiving treatments A, D or F (Placebo). Fit a regression model for the
+post-treatment score on the treatment regarded as a ‘factor’ with three levels, and plot
+the residuals against the pre-treatment score.
+2. For the data set of Question 1, fit a regression model for the pre-treatment score on the
+treatment regarded as a ‘factor’ with three levels, and plot the residuals of Question 1
+against the residuals of this regression. [This is called a partial regression plot.]
+3. Find the partial correlation between the post-treatment score and the pre-treatment
+score.
+4. Compare the partial correlation of Question 3 with the correlation between the two
+variables. Do you expect the observed order between the two correlation to prevail in
+other data sets too?
+5. Obtain the partial regression of the post-treatment score on the pre-treatment score,
+and comment on the regression coefficients.
+
+ANSWERS:
+#1
+library(lmreg)
+data("leprosy")
+lm1<-lm(post~treatment,data=leprosy)
+summary(lm1)
+y1<-lm1$residuals
+x<- leprosy$pre
+y<-leprosy$post
+plot(x,y1,xlab="pre-treatment scores",ylab = "residuals on post-treatment scores",main = "Correlation plot 1")
+
+#2
+library(lmreg)
+data("leprosy")
+lm2<-lm(pre~treatment,data=leprosy)
+summary(lm2)
+y2<-lm2$residuals
+plot(y2,y1,xlab="residuals on pre-treatment scores",ylab = "residuals on post-treatment scores",main = "Partial Correlation plot ")
+
+#3
+cor(y1,y2)
+
+#4
+cor(x,y)
+
+#comment:Yes,in most cases, the partial correlation (controlling for treatment) 
+#will be lower than the Pearson correlation (simple correlation between pre- and
+#post-treatment scores)
+
+#Reason:
+
+#a. Pearson correlation measures the overall relationship between pre- and post-
+#treatment scores, without adjusting for treatment effects.
+
+#b. Partial correlation isolates the relationship between the two scores after 
+#removing the effect of treatment, which often weakens the correlation.
+
+#c. Treatment introduces variability—if treatment has a strong effect, the raw 
+#correlation between pre- and post-treatment scores might be high simply because 
+#both scores are indirectly influenced by the treatment. 
+#Once we adjust for treatment, some of that shared variation disappears.
+
+#Exception: If treatment has no impact on post-treatment scores, then the 
+#partial correlation will be nearly equal to the Pearson correlation.
+
+#5
+lm3<- lm(y1~y2,data=leprosy)
+summary(lm3)
+co1<-coef(lm3)
+abline(co1[1],co1[2])
+#Comment:
+#co1[1] is the intercept of the partial regression line
+#co2[2] is the slope
 
