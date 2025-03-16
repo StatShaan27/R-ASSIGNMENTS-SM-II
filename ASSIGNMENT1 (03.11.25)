@@ -1,0 +1,180 @@
+QUESTIONS: (due 10-11 March, 2025)
+
+1. The data set worldpop available in the R package lmreg contains data on the midyear popu-
+lation of the world (in billions) for the years 1981-2000. Assuming that the regression of the
+world population (Pop.billion) on the year variable (Year) is a continuous and piecewise linear
+function (with a single change point at the year 1990), fit a suitable multiple linear regression
+model through an R code, and identify from the output the following: (a) the estimated regression
+coefficients, (b) the estimated standard deviation of the error and (c) the value of R-square.
+
+2. Continuing with the data of Question 1, assume that the regression of Pop.billion on Year is a
+continuous and piecewise quadratic function, with a single change point at the year 1990. Specify
+a multiple linear regression model that captures the above characteristics, clearly identifying the
+variables and the regression coefficients.
+
+3. Continuing with the data of Question 1, fit the model of Question 2, identify the estimated
+regression coefficients and interpret them.
+
+4. Identify (a) the estimated standard deviation of the error and (b) the value of R-square in the fit
+of Question 3, compare with the corresponding values in Question 1 and comment.
+
+5. For which values of the parameters of Question 2 will you conclude that the piecewise linear
+model is adequate?
+
+6. Modify the answer to Question 2 with the additional assumption that the derivative of the
+piecewise quadratic function is continuous at the change point.
+
+7. Continuing with the data of Question 1, fit the model of Question 6, identify the estimated
+regression coefficients and interpret them.
+
+8. Identify (a) the estimated standard deviation of the error and (b) the value of R-square in the fit
+of Question 7, compare with the corresponding values in Questions 1 and 4 and comment.
+
+9. For which values of the parameters of Question 2 will you conclude that the derivative of the
+piecewise quadratic function is continuous at the change point?
+
+10. The data set leprosy available in the R package lmreg (taken from Senedecor and Cochran,
+1967) contains pre- and post-treatment scores on abundance of leprosy for patients receiving
+treatments A, D or F (Placebo). Fit a regression model for the post-treatment score, with pre-
+treatment score as an explanatory variable and the treatment regarded as a ‘factor’ with three
+levels. According to the fitted model, what is the expected post-treatment score of a patient who
+has pre-treatment score x and belongs to treatment group (a) A, (b) D or (c) F? [Three different
+answers are asked for.]
+
+11. For the data set of Question 10, replace the ‘factor’ treatment by a pair of binary variables that
+are indicators of groups A and D, and fit this modified model. According to the fitted model,
+what is the expected post-treatment score of a patient who has pre-treatment score x and belongs
+to treatment group (a) A, (b) D or (c) F? [Three different answers are asked for.]
+
+12. How will the answers to Question 11 change if the binary variables are chosen as indicators of
+groups A and F?
+
+
+ANSWERS:
+RCODES:
+
+#1
+
+#for the modelling, see copy
+library(lmreg)
+data("worldpop")
+x0<-1990
+y<- worldpop$Pop.billion
+x<-worldpop$Year
+x1<-rep(0,length(x))
+x1[x>x0]=1
+x4<-(1-x1)(x-x0)
+x5<-x1(x-x0)
+lm1<-lm(Pop.billion~x4+x5,data=worldpop)
+coefficients(lm1)
+sigma(lm1)
+summary(lm1)$r.squared
+
+#2 see copy
+
+#3
+library(lmreg)
+data("worldpop")
+x0<-1990
+y<- worldpop$Pop.billion
+x<-worldpop$Year
+x1<-rep(0,length(x))
+x1[x>x0]=1
+x4<-(1-x1)(x-x0)
+x5<-x1(x-x0)
+x6<-(1-x1)(x^2-(x0)^2)
+x7<-x1(x^2-(x0)^2)
+lm2<-lm(Pop.billion~x4+x5+x6+x7,data=worldpop)
+coefficients(lm2)
+
+#interpretation(See board image)
+
+#4
+sigma(lm1)
+sigma(lm2)
+
+summary(lm1)$r.squared
+summary(lm2)$r.squared
+
+#5
+
+The piece wise model is considered adequate when the coefficients of x^2 are low
+
+eg: in q2-3, they are x6 and x7 and are of the order 10^-4
+
+#6 see copy
+
+#7
+library(lmreg)
+data("worldpop")
+x0<-1990
+y<- worldpop$Pop.billion
+x<-worldpop$Year
+x1<-rep(0,length(x))
+x1[x>x0]=1
+x8<-x
+x9<-x*((1-x1)x+2(x0)(x1))
+x10<-x1(x-x0)^2
+lm3<-lm(y~x8+x9+x10,data=worldpop)
+coefficients(lm3)
+
+#interpretation similar to 3
+
+#8
+sigma(lm1)
+sigma(lm2)
+sigma(lm3)
+
+summary(lm1)$r.squared
+summary(lm2)$r.squared
+summary(lm3)$r.squared
+#comments
+#lm2 er r² lower than lm3 ar std devn of error in lm3 is more than lm2
+#so assuming that deriv is continuous is an unfavourable restriction
+
+#Q9
+summary(lm2)
+summary(lm3)
+#for continuity condn, a1-b1 = 2_1990_(b2-a2)
+
+#Q10
+data(leprosy)
+head(leprosy)
+lm4<- lm(post ~ pre+ treatment, data = leprosy)
+summary(lm4)
+co<-coef(lm4)
+D0<-co[1]+co[3]+co[2]*x
+F0<-co[1]+co[4]+co[2]*x
+A0<-co[1]+co[2]*x
+A0
+D0
+F0
+
+#Q11
+leprosy$Ai <- ifelse(leprosy$treatment == "A", 1, 0)
+leprosy$Di <- ifelse(leprosy$treatment == "D", 1, 0)
+lm5<- lm(post ~ pre+ Ai+Di, data = leprosy)
+summary(lm5)
+co1<-coef(lm5)
+A<-co1[1]+co1[3]+co1[2]*x
+D<-co1[1]+co1[4]+co1[2]*x
+F<-co1[1]+co1[2]*x
+A
+D
+F
+
+#Q12
+leprosy$Ai <- ifelse(leprosy$treatment == "A", 1, 0)
+leprosy$Fi <- ifelse(leprosy$treatment == "F", 1, 0)
+lm6<- lm(post ~ pre+ Ai+Fi, data = leprosy)
+summary(lm6)
+co2<-coef(lm6)
+A2<-co2[1]+co2[3]+co2[2]*x
+F2<-co2[1]+co2[4]+co2[2]*x
+D2<-co2[1]+co2[2]*x
+A2
+D2
+F2
+head(cbind(A0,A,A2))
+head(cbind(D0,D,D2))
+head(cbind(F0,F,F2))
