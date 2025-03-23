@@ -1,0 +1,28 @@
+Questions (due 25th March)
+Statistical Methods II: Week 9 Assignment (due 24 March, 2025)
+
+1. Derive the Method of Moments estimator of the rate parameter of the Poisson distri-
+bution.
+
+2. Derive the Method of Moments estimators of the mean and the variance parameters
+of the Poisson distribution.
+
+3. Derive the Method of Moments estimators of the mean and the variance parameters
+of the Gamma distribution.
+
+4. Derive the Method of Moments estimators of the shape and the scale parameters of
+the Gamma distribution.
+
+5. Suppose the random variables Y, X1, X2, . . . , Xk have mean vector μ and varaince-
+covariance matrix Σ, partitioned as μ =(μY μX)T, Σ =(σ2Y ΣYX, ΣXY ΣXX), where μY and (σY)^2 are the mean and the variance of Y.
+What are the method of moments estimators of β = (ΣXX)^-1ΣXY and β0 = μY + βT(X −μX), where X is the column vector
+with elements X1, X2, . . . , Xk? You may assume that the joint distribution of the
+random variables are defined with any restriction on the matrix Σ, except that it is positive definite.
+
+6. Suppose εY |X = Y − μY − ΣYX(ΣXX)^-1(X − μX), where the notations and assumptions of
+Question 5 are used. Suppose further that for another random variable Z, we similarly
+define εZ|X. What is the best linear prediction of εY |X in terms of εZ|X, which minimizes
+the mean squared error of prediction?
+
+7. In Question 6, what is the partial correlation of Y and Z, after adjustment for the
+linear effects of X?
